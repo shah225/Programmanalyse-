@@ -1,0 +1,9 @@
+procedure add() {
+  var a:int;
+  var aOld:int;
+
+  aOld := a;
+  assert (aOld == a);
+  a := a + 1;
+  assert (aOld + 2) == a;
+}
