@@ -19,4 +19,4 @@ add_subdirectory(lib/cudd)
 add_subdirectory(src)
 
 add_executable(Verifier Verifier.cpp)
-target_link_libraries(Verifier libz3 parser)
+target_link_libraries(Verifier parser)

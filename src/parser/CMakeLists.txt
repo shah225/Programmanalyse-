@@ -35,4 +35,4 @@ target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # export B
 target_include_directories(parser PUBLIC ${ANTLR_BoogieParser_OUTPUT_DIR}) # add generated parser files
 target_include_directories(parser PUBLIC ${ANTLR_CParser_OUTPUT_DIR}) # add generated parser files
 target_include_directories(parser PUBLIC ${ANTLR4_INCLUDE_DIRS}) # add antrl4cpp artifacts to project environment
-target_link_libraries(parser antlr4_static smtlib) # link with antlr runtime
+target_link_libraries(parser PUBLIC antlr4_static smtlib) # link with antlr runtime
