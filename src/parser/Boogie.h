@@ -55,9 +55,7 @@ public:
     // std::any visitHavoc_cmd(BoogieParser::Havoc_cmdContext *context) override;
     std::any visitIf_cmd(BoogieParser::If_cmdContext *context) override;
 
-    // std::any visitLabel(BoogieParser::LabelContext *context) override;
-    // std::any visitPar_call_cmd(BoogieParser::Par_call_cmdContext *context) override;
-    std::any visitReturn_cmd(BoogieParser::Return_cmdContext *context) override;
+
 
     std::any visitWhile_cmd(BoogieParser::While_cmdContext *context) override;
 

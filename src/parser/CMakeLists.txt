@@ -1,5 +1,6 @@
 # ANTLR parser generator
-set(ANTLR_EXECUTABLE ${PROJECT_SOURCE_DIR}/lib/antlr/antlr-4.13.1-complete.jar) # set antlr parser generator location
+set(ANTLR_EXECUTABLE /usr/local/lib/antlr-4.13.1-complete.jar)
+# set antlr parser generator location
 # ANTLR runtime
 add_definitions(-DANTLR4CPP_STATIC) # required if linking to static library
 set(ANTLR4_WITH_STATIC_CRT OFF) # using /MD flag for antlr4_runtime (for Visual C++ compilers only)
@@ -18,7 +19,6 @@ set(PARSER_SOURCES
         ast/statements/Assert.h
         ast/statements/Assignment.h
         ast/statements/Assume.h
-        ast/statements/Return.h
         ast/statements/Skip.h
         ast/Expression.h
         ast/FunctionDefinition.h

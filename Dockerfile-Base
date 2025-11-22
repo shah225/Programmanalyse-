@@ -1,5 +1,7 @@
+# Dockerfile-Base
 FROM ubuntu:latest
 
+# System-Pakete installieren (nur das Nötigste)
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         build-essential \
@@ -13,10 +15,9 @@ RUN apt-get update && \
         libz3-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# ANTLR Jar aus deinem Projekt einbinden
+COPY lib/antlr/antlr-4.13.1-complete.jar /usr/local/lib/antlr-4.13.1-complete.jar
+ENV ANTLR_EXECUTABLE=/usr/local/lib/antlr-4.13.1-complete.jar
+
 WORKDIR /verifier
-COPY . /verifier
-
-RUN cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_SYSTEM_Z3=ON && \
-    cmake --build build --target Verifier
-
-CMD ["./build/Verifier"]
+CMD ["bash"]

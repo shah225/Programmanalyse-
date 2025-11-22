@@ -1,0 +1,6 @@
+FROM verifier-base
+WORKDIR /verifier
+COPY . .
+RUN cmake -S . -B build -DUSE_SYSTEM_Z3=ON -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build build -j$(nproc)
+CMD ["./build/Verifier"]

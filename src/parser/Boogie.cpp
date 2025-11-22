@@ -10,7 +10,6 @@
 #include "ast/Program.h"
 #include "ast/FunctionDefinition.h"
 #include "ast/programs/While.h"
-#include "ast/statements/Return.h"
 
 using namespace ast;
 
@@ -187,9 +186,6 @@ std::any BoogieProgramVisitor::visitIf_cmd(BoogieParser::If_cmdContext *context)
     return std::shared_ptr<Program>(ifElse);
 }
 
-std::any BoogieProgramVisitor::visitReturn_cmd(BoogieParser::Return_cmdContext *context) {
-    return std::make_shared<Return>();
-}
 
 std::any BoogieProgramVisitor::visitWhile_cmd(BoogieParser::While_cmdContext *context) {
     auto guard = std::any_cast<std::shared_ptr<ast::Expression> >(visitGuard(context->guard()));
