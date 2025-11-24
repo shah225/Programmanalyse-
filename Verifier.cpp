@@ -2,6 +2,8 @@
 #include <z3++.h>
 #include <iostream>
 #include "./src/smt/SMT.h"
+#include "Ast2Cfg.h"
+#include "ControlFlowGraph.h"
 
 int main(int argc, char *argv[]) {
   const auto program = parser::parseBoogie("benchmarks/addition.boogie");
@@ -29,5 +31,15 @@ int main(int argc, char *argv[]) {
     std::cout << "UNKNOWN: solver could not decide" << std::endl;
   }
 
+
+  {
+    ControlFlowGraph cfg = ast2cfg(*program);
+    std::ofstream out("/app/output/cfg.dot");
+
+    cfg.dumpDot(out);
+    out.close();
+    std::cout << "CFG in cfg.dot geschrieben. Mit Graphviz:\n";
+    std::cout << "dot -Tpng cfg.dot -o cfg.png\n";
+  }
   return 0;
 }

@@ -1,0 +1,17 @@
+procedure Sum(n: int) returns (sum: int)
+{
+    var i: int;
+    sum := 0;
+    i := 0;
+
+    while (i < n)
+        invariant 0 <= i <= n;
+        invariant sum * 2 == i * (i - 1);
+
+    {
+        sum := sum + i;
+        i := i + 1;
+    }
+
+    assert sum == (n * (n - 1)) / 2;
+}

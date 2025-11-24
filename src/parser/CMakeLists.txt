@@ -26,12 +26,15 @@ set(PARSER_SOURCES
         Ast2Cfg.h
         Boogie.h
         Boogie.cpp
+        ControlFlowGraph.h
+        Ast2Cfg.cpp
 )
 add_library(parser ${PARSER_SOURCES} ${ANTLR_BoogieParser_CXX_OUTPUTS})
 
 # linking
 set_target_properties(parser PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # export Boogie.h
+target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ast)
 target_include_directories(parser PUBLIC ${ANTLR_BoogieParser_OUTPUT_DIR}) # add generated parser files
 target_include_directories(parser PUBLIC ${ANTLR_CParser_OUTPUT_DIR}) # add generated parser files
 target_include_directories(parser PUBLIC ${ANTLR4_INCLUDE_DIRS}) # add antrl4cpp artifacts to project environment
