@@ -38,13 +38,11 @@ public:
 
 
 
-    BuildSubgraph buildAssignment(const ast::Assignment &assign) {
-    int e = cfg.addNode("assign entry");
-    int x = cfg.addNode("assign exit");
-    // Identifier + Expression → "x = 5"
-    cfg.addEdge(e, x, assign.identifier + " = " + assign.expression->toString());
-    return {e, x};
+BuildSubgraph buildAssignment(const ast::Assignment &assign) {
+    int node = cfg.addNode("assign: " + assign.identifier + " := " + assign.expression->toString());
+    return {node, node};
 }
+
 
 BuildSubgraph buildIfElse(const ast::IfElse &ifelse) {
     int test = cfg.addNode("if test");
@@ -110,15 +108,21 @@ BuildSubgraph buildSkip(const ast::Skip &) {
 }
 
 BuildSubgraph buildSequence(const ast::Sequence &seq) {
-    int passthrough = cfg.addNode("seq entry");
-    BuildSubgraph acc{passthrough, passthrough};
+    BuildSubgraph acc;
+    bool first = true;
     for (auto &prog : seq.programs) {
         BuildSubgraph sg = build(*prog);
-        cfg.addEdge(acc.exit, sg.entry, "");
+        if (first) {
+            acc.entry = sg.entry;
+            first = false;
+        } else {
+            cfg.addEdge(acc.exit, sg.entry, "");
+        }
         acc.exit = sg.exit;
     }
     return acc;
 }
+
 
 
 private:

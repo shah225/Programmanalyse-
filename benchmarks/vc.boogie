@@ -1,0 +1,16 @@
+procedure incToN() {
+  var x:int;
+  var n:int;
+
+  assume (n >= 0);
+
+  x := 0;
+
+  while (x < n)
+    invariant 0 <= x && x <= n;
+  {
+    x := x + 1;
+  }
+
+  assert(x == n);
+}

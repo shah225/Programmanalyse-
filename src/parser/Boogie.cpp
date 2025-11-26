@@ -101,6 +101,9 @@ std::any BoogieProgramVisitor::visitLabel_or_cmd(BoogieParser::Label_or_cmdConte
     if (context->assert_cmd() != nullptr) {
         return visitAssert_cmd(context->assert_cmd());
     }
+	if (context->assume_cmd() != nullptr) {
+        return visitAssume_cmd(context->assume_cmd());
+    }
     throw std::runtime_error("not implemented");
 }
 
@@ -155,9 +158,11 @@ std::any BoogieProgramVisitor::visitDef_body(BoogieParser::Def_bodyContext *cont
 }
 
 std::any BoogieProgramVisitor::visitAssume_cmd(BoogieParser::Assume_cmdContext *context) {
-    const auto condition = std::any_cast<std::shared_ptr<ast::Expression> >(visitProposition(context->proposition()));
-    return std::make_shared<ast::Assume>(condition);
+    const auto condition = std::any_cast<std::shared_ptr<ast::Expression>>(visitProposition(context->proposition()));
+    auto assume = std::make_shared<ast::Assume>(condition);
+    return std::shared_ptr<const Program>(assume);
 }
+
 
 std::any BoogieProgramVisitor::visitCall_cmd(BoogieParser::Call_cmdContext *context) {
     throw std::runtime_error("not implemented");

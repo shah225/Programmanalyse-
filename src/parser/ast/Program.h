@@ -12,7 +12,7 @@ public:
   [[nodiscard]] virtual std::string toString(int indent) const = 0;
 
   [[nodiscard]] virtual z3::expr wp(const z3::expr& postcondition) const {
-    throw std::logic_error("not implemented");
+
   };
 
   void print() const { std::cout << toString(0); }

@@ -4,8 +4,6 @@
 #include "../Expression.h"
 #include "../Program.h"
 
-//TODO: fix while invariant wp & test cfg implementation
-
 namespace ast {
 class While final : public Program {
 public:
@@ -13,12 +11,13 @@ public:
   const std::shared_ptr<const Program> body;
   const std::shared_ptr<Expression> invariant;
 
-  While(std::shared_ptr<Expression> condition, std::shared_ptr<const Sequence> body,
-        std::shared_ptr<Expression> invariant)
-      : condition(std::move(condition)),
-        body(std::move(body)),
-        invariant(std::move(invariant)) {
-  }
+  While(std::shared_ptr<Expression> condition,
+      std::shared_ptr<const Program> body,
+      std::shared_ptr<Expression> invariant)
+    : condition(std::move(condition)),
+      body(std::move(body)),
+      invariant(std::move(invariant)) {}
+
 
   [[nodiscard]] z3::expr wp(const z3::expr &postcondition) const override {
     z3::expr inv = invariant->expression;
