@@ -46,6 +46,9 @@ public:
     out << "}\n";
   }
 
+  const std::vector<CFGNode>& getNodes() const {return nodes;}
+  const std::vector<CFGEdge>& getEdges() const {return edges;}
+
 private:
   std::vector<CFGNode> nodes;
   std::vector<CFGEdge> edges;

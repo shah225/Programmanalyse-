@@ -28,6 +28,7 @@ set(PARSER_SOURCES
         Boogie.cpp
         ControlFlowGraph.h
         Ast2Cfg.cpp
+        ast/dataFlowAnalysis/ReachingDefinition.h
 )
 add_library(parser ${PARSER_SOURCES} ${ANTLR_BoogieParser_CXX_OUTPUTS})
 

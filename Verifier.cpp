@@ -4,6 +4,7 @@
 #include "./src/smt/SMT.h"
 #include "Ast2Cfg.h"
 #include "ControlFlowGraph.h"
+#include "./src/parser/ast/dataFlowAnalysis/ReachingDefinition.h"
 
 #include "./src/parser/ast/programs/Sequence.h"
 #include "./src/parser/ast/programs/IfElse.h"
@@ -15,34 +16,35 @@
 #include "./src/parser/ast/statements/Skip.h"
 
 inline z3::expr collectAssertions(const ast::Program &prog, z3::context &ctx) {
-    z3::expr post = ctx.bool_val(true);
+    z3::expr post = ctx.bool_val(true); //startwert true && x = x
 
     if (auto seq = dynamic_cast<const ast::Sequence*>(&prog)) {
         for (auto &sub : seq->programs) {
-            post = post && collectAssertions(*sub, ctx);
+            post = post && collectAssertions(*sub, ctx); //rekursiver aufruf bei sequenz
         }
     } else if (auto as = dynamic_cast<const ast::Assert*>(&prog)) {
         z3::expr cond = as->condition->expression;
-        post = post && cond;
+        post = post && cond; //einfaches assert - neue condition mit vorheriger post &&
     } else if (auto ifelse = dynamic_cast<const ast::IfElse*>(&prog)) {
-        post = post && collectAssertions(*ifelse->thenBody, ctx);
-        if (ifelse->elseBody.has_value()) {
+        post = post && collectAssertions(*ifelse->thenBody, ctx); //thenbody muss exisitieren
+        if (ifelse->elseBody.has_value()) { //elsebody kann exisitieren
             post = post && collectAssertions(*ifelse->elseBody.value(), ctx);
         }
     } else if (auto wh = dynamic_cast<const ast::While*>(&prog)) {
-        post = post && collectAssertions(*wh->body, ctx);
+        post = post && collectAssertions(*wh->body, ctx); //rekursiv
     }
 
     return post;
 }
 
 int main(int argc, char *argv[]) {
-  const auto program = parser::parseBoogie("benchmarks/vc.boogie");
+//parsing program to ast
+const auto program = parser::parseBoogie("benchmarks/vc.boogie");
 
   program->print();
 
+  //calc postcon
   z3::expr post = collectAssertions(*program, z3Ctx);
-
   z3::expr wp = program->wp(post);
 
   // raw and simplified wp
@@ -52,6 +54,7 @@ int main(int argc, char *argv[]) {
   z3::solver s(z3Ctx);
   s.add(wp);
 
+  //solver
   auto result = s.check();
   if (result == z3::sat) {
     std::cout << "SAT: model exists" << std::endl;
@@ -62,7 +65,7 @@ int main(int argc, char *argv[]) {
     std::cout << "UNKNOWN: solver could not decide" << std::endl;
   }
 
-
+  //cfg
   {
     ControlFlowGraph cfg = ast2cfg(*program);
     std::ofstream out("/app/output/cfg.dot");
@@ -70,6 +73,15 @@ int main(int argc, char *argv[]) {
     out.close();
     std::cout << "CFG in cfg.dot geschrieben. Mit Graphviz:\n";
     std::cout << "dot -Tpng cfg.dot -o cfg.png\n";
-  }
+
+
+    ReachingDefinitions rd(cfg);
+    rd.dump(std::cout);
+
+}
+
+
+
+
   return 0;
 }

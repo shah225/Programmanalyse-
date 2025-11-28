@@ -40,7 +40,7 @@ public:
 
 BuildSubgraph buildAssignment(const ast::Assignment &assign) {
     int node = cfg.addNode("assign: " + assign.identifier + " := " + assign.expression->toString());
-    return {node, node};
+    return {node, node}; //assign ist ein einziger knoten
 }
 
 
@@ -52,7 +52,7 @@ BuildSubgraph buildIfElse(const ast::IfElse &ifelse) {
     if (ifelse.elseBody.has_value()) {
         elseG = build(*ifelse.elseBody.value());
     } else {
-        // leeres else → Skip
+        // skip durch leeres else
         int e = cfg.addNode("else entry");
         int x = cfg.addNode("else exit");
         cfg.addEdge(e, x, "");
@@ -73,9 +73,11 @@ BuildSubgraph buildWhile(const ast::While &wh) {
 
     BuildSubgraph bodyG = build(*wh.body);
 
+	//while bedingung true
     cfg.addEdge(header, bodyG.entry, wh.condition->toString());
     int exit = cfg.addNode("while exit");
-    cfg.addEdge(header, exit, "!(" + wh.condition->toString() + ")");
+    //while bedingung false
+	cfg.addEdge(header, exit, "!(" + wh.condition->toString() + ")");
     cfg.addEdge(bodyG.exit, header, "");
 
     // invariant als Label
@@ -113,9 +115,11 @@ BuildSubgraph buildSequence(const ast::Sequence &seq) {
     for (auto &prog : seq.programs) {
         BuildSubgraph sg = build(*prog);
         if (first) {
+			//beim ersten mal entry für zwischenspeicherung acc setzen
             acc.entry = sg.entry;
             first = false;
         } else {
+			//hintereinander miteinander verknpüfen
             cfg.addEdge(acc.exit, sg.entry, "");
         }
         acc.exit = sg.exit;
